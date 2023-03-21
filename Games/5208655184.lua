@@ -1,3 +1,5 @@
+repeat task.wait() until game:IsLoaded()
+
 local players = game:GetService("Players")
 local httpService = game:GetService("HttpService")
 local collectionService = game:GetService("CollectionService")
@@ -17,9 +19,6 @@ local live = workspace:WaitForChild("Live")
 local character, root, torso, head
 
 local keys = {W = 0, S = 0, D = 0, A = 0}
-local useful_potions = {"Health Potion"; "Tespian Elixir"; "Feather Feet"; "Lordsbane"; "Kingsbane"; "Bone Growth"}
-
-local logger_label = Drawing.new("Text")
 
 _G.Opium = {
 	DayFarmer = {
@@ -27,8 +26,6 @@ _G.Opium = {
 		["LogRange"] = 50
 	}
 }
-_G.debug = true
-_G.VERSION = "opium 0.1.0a"
 
 local function character_added()
 	character = player.Character
@@ -46,10 +43,6 @@ end
 character_added()
 player.CharacterAdded:Connect(character_added)
 player.CharacterRemoving:Connect(character_removed)
-
-if _G.debug == true then
-	rconsolename(_G.VERSION)
-end
 
 --# utility package
 local utility = {}
@@ -582,25 +575,6 @@ end)
 
 --# remote spoofa
 
-local metaTable = getrawmetatable(game)
-local nameCall = metaTable.__namecall
-shared.fdRemote = nil
-setreadonly(metaTable, false)
-
-metaTable.__namecall = newcclosure(function(self, ...)
-	local method = getnamecallmethod()
-	local arguments = {...}
-
-	if method == "FireServer" and arguments[1] ~= nil and typeof(arguments[1]) == "number" then
-		if config["NoFall"] == true then
-			return
-		else
-			return nameCall(self, unpack(arguments))
-		end
-	end
-
-	return nameCall(self, ...)
-end)
 
 --#
 
