@@ -798,7 +798,7 @@ function library:saveconfig()
 end
 --
 function library:loadconfig(cfg)
-	local cfg = hs:JSONDecode(syn.crypt.decrypt(readfile(cfg), key))
+	local cfg = hs:JSONDecode(readfile(cfg)--[[syn.crypt.decrypt(readfile(cfg), key)]])
 	for i,v in pairs(cfg) do
 		for c,d in pairs(v) do
 			for x,z in pairs(d) do
@@ -810,7 +810,7 @@ function library:loadconfig(cfg)
 			end
 		end
 	end
-    return config
+    return cf
 end
 --
 function library:settheme(theme,color)
