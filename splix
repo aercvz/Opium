@@ -807,6 +807,7 @@ function library:loadconfig(config, key)
             end
         end
     end
+    return config
 end
 --
 function library:settheme(theme,color)
