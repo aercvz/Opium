@@ -186,9 +186,10 @@ function library:insert_label(text, color)
 		window["labels"][#window["labels"] + 1] = label
 	end
 end
-function library:update()
+function library:update(toggled)
 	local totalSize = UDim2.new(0, 0, 0, 0)
 	local window = self
+	window["screen"].Enabled = toggled
 	if window["logger_holder"] then
 		for _, text_label in pairs(window["logger_holder"]:GetChildren()) do
 			if text_label:IsA("TextLabel") then
