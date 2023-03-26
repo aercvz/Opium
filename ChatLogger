@@ -202,4 +202,17 @@ function library:update(toggled)
 		end
 	end
 end
+function library:settheme(theme, color)
+	local window = self
+	if window.theme[theme] then
+		window.theme[theme] = color
+	end
+	if window.themeitems[theme] then
+		for i, v in pairs(window.themeitems[theme]) do
+			for _, x in pairs(v) do
+				x[i] = color
+			end
+		end
+	end
+end
 return library
