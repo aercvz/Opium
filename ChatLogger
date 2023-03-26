@@ -1,0 +1,158 @@
+local coreGui = game:GetService("CoreGui")
+local userInput = game:GetService("UserInputService")
+
+local library = {}
+
+library.__index = library
+
+--# modules
+
+-- utility
+local utility = {}
+function utility.new(instance_type, properties)
+	local instance = Instance.new(instance_type)
+	for property, value in pairs(properties) do
+		instance[property] = value
+	end
+	return instance
+end
+function utility.dragify(instance, to_use)
+	local dragging, dragInput, dragStart, startPosition
+	
+	local function update(input)
+		local delta = input.Position - dragStart
+		to_use:TweenPosition(UDim2.new(startPosition.X.Scale, startPosition.X.Offset + delta.X, startPosition.Y.Scale, startPosition.Y.Offset + delta.Y), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.1, true)
+	end
+	
+	instance.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = true
+			dragStart = input.Position
+			startPosition = to_use.Position
+			
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					dragging = false
+				end
+			end)
+		end
+	end)
+	instance.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+			dragInput = input
+		end
+	end)
+	userInput.InputChanged:Connect(function(input)
+		if input == dragInput and dragging then
+			update(input)
+		end
+	end)
+end
+
+--#
+
+function library:new(info) --# window
+	local main = utility.new("ScreenGui", {
+		Name = "aercvz",
+		DisplayOrder = 9999,
+		ResetOnSpawn = false,
+		ZIndexBehavior = "Global",
+		Parent = coreGui
+	})
+	if syn.request then
+		syn.protect_gui(main)
+	end
+	local border = utility.new("Frame", {
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		BackgroundColor3 = info.color,
+		BorderColor3 = Color3.fromRGB(12, 12, 12),
+		BorderSizePixel = 1,
+		Size = UDim2.new(0, 600, 0, 790),
+		Position = UDim2.new(0.5, 0, 0.5, 0),
+		Parent = main
+	})
+	local border2 = utility.new("Frame", {
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		BackgroundColor3 = Color3.fromRGB(0, 0, 0),
+		BorderColor3 = Color3.fromRGB(12, 12, 12),
+		BorderSizePixel = 1,
+		Size = UDim2.new(1, -4, 1, -4),
+		Position = UDim2.new(0.5, 0, 0.5, 0),
+		Parent = border
+	})
+	local indent = utility.new("Frame", {
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		BackgroundColor3 = Color3.fromRGB(20, 20, 20),
+		BorderColor3 = Color3.fromRGB(56, 56, 56),
+		BorderMode = "Inset",
+		BorderSizePixel = 1,
+		Size = UDim2.new(1, 0, 1, 0),
+		Position = UDim2.new(0.5, 0, 0.5, 0),
+		Parent = border2
+	})
+	local holder = utility.new("Frame", {
+		AnchorPoint = Vector2.new(0.5, 1),
+		BackgroundColor3 = Color3.fromRGB(20, 20, 20),
+		BorderColor3 = Color3.fromRGB(56, 56, 56),
+		BorderMode = "Inset",
+		BorderSizePixel = 1,
+		Size = UDim2.new(1, -10, 1, -25),
+		Position = UDim2.new(0.5, 0, 1, -5),
+		Parent = border2
+	})
+	local title = utility.new("Frame", {
+		AnchorPoint = Vector2.new(0.5, 0),
+		BackgroundTransparency = 1,
+		Size = UDim2.new(1, 0, 0, 20),
+		Position = UDim2.new(0.5, 0, 0, 0),
+		Parent = border2
+	})
+	local border3 = utility.new("Frame", {
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		BackgroundColor3 = Color3.fromRGB(24, 24, 24),
+		BorderColor3 = Color3.fromRGB(12, 12, 12),
+		BorderMode = "Inset",
+		BorderSizePixel = 1,
+		Size = UDim2.new(1, 0, 1, 0),
+		Position = UDim2.new(0.5, 0, 0.5, 0),
+		Parent = holder
+	})
+	local title_text = utility.new("TextLabel", 		{
+		AnchorPoint = Vector2.new(0.5, 0),
+		BackgroundTransparency = 1,
+		Size = UDim2.new(1, -10, 1, 0),
+		Position = UDim2.new(0.5, 0, 0, 0),
+		Font = info.font,
+		Text = info.name,
+		TextColor3 = Color3.fromRGB(255,255,255),
+		TextXAlignment = "Left",
+		TextSize = info.textsize,
+		TextStrokeTransparency = 0,
+		Parent = title
+	})
+	utility.dragify(title, border)
+	local window = {
+		["screen"] = main,
+		["border"] = border,
+		["labels"] = {},
+		["x"] = true,
+		["y"] = true,
+		["textsize"] = info.textsize,
+		["font"] = info.font,
+		["theme"] = {
+			["accent"] = info.color
+		},
+		["themeitems"] = {
+			["accent"] = {
+				["BackgroundColor3"] = {},
+				["BorderColor3"] = {},
+				["TextColor3"] = {}
+			}
+		}
+	}
+	table.insert(window["themeitems"]["accent"]["BackgroundColor3"], border)
+	window["labels"][#window["labels"] + 1] = title_text
+	setmetatable(window, library)
+	return window
+end
+return library
