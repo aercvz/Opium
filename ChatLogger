@@ -117,10 +117,10 @@ function library:new(info) --# window
 		Position = UDim2.new(0.5, 0, 0.5, 0),
 		Parent = holder
 	})
-	local title_text = utility.new("TextLabel", 		{
+	local title_text = utility.new("TextLabel", {
 		AnchorPoint = Vector2.new(0.5, 0),
 		BackgroundTransparency = 1,
-		Size = UDim2.new(1, -10, 1, 0),
+		Size = UDim2.new(1, -10, 1, -10),
 		Position = UDim2.new(0.5, 0, 0, 0),
 		Font = info.font,
 		Text = info.name,
@@ -130,10 +130,26 @@ function library:new(info) --# window
 		TextStrokeTransparency = 0,
 		Parent = title
 	})
+	local logger_contents = utility.new("ScrollingFrame", {
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		BackgroundTransparency = 1,
+		Size = UDim2.new(1, -10, 1, -10),
+		Position = UDim2.new(0.5, 0, 0.5, 0),
+		BottomImage = "",
+		MidImage = "",
+		TopImage = "",
+		ScrollBarThickness = 0,
+		Parent = holder
+	})
+	utility.new("UIListLayout", {
+		SortOrder = Enum.SortOrder.LayoutOrder,
+		Parent = logger_contents
+	})
 	utility.dragify(title, border)
 	local window = {
 		["screen"] = main,
 		["border"] = border,
+		["logger_holder"] = logger_contents,
 		["labels"] = {},
 		["textsize"] = info.textsize,
 		["font"] = info.font,
@@ -152,5 +168,37 @@ function library:new(info) --# window
 	window["labels"][#window["labels"] + 1] = title_text
 	setmetatable(window, library)
 	return window
+end
+function library:insert_label(text, color)
+	local window = self
+	if window["logger_holder"] then
+		local label = utility.new("TextLabel", {
+			Text = text,
+			BackgroundTransparency = 1,
+			TextColor3 = Color3.fromRGB(255, 255, 255),
+			TextSize = window["textsize"],
+			TextWrapped = true,
+			TextXAlignment = Enum.TextXAlignment.Left,
+			Size = UDim2.new(0, 500, 0, 50),
+			Font = window["font"],
+			Parent = window["logger_holder"]
+		})
+		window["labels"][#window["labels"] + 1] = label
+	end
+end
+function library:update()
+	local totalSize = UDim2.new(0, 0, 0, 0)
+	local window = self
+	if window["logger_holder"] then
+		for _, text_label in pairs(window["logger_holder"]:GetChildren()) do
+			if text_label:IsA("TextLabel") then
+				totalSize = totalSize + UDim2.new(0, 0, 0, text_label.Size.Y.Offset)
+				if totalSize.Y.Offset >= window["logger_holder"].CanvasSize.Y.Offset then
+					window["logger_holder"].CanvasSize = UDim2.new(totalSize.X.Scale, totalSize.X.Offset, totalSize.Y.Scale, totalSize.Y.Offset + 100)
+					window["logger_holder"].CanvasPosition = window["logger_holder"].CanvasPosition + Vector2.new(0, totalSize.Y.Offset)
+				end
+			end
+		end
+	end
 end
 return library
