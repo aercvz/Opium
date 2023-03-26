@@ -128,7 +128,7 @@ utility.to_hex = function(c)
 end
 --
 utility.removespaces = function(s)
-   return s:gsub(" ","")
+	return s:gsub(" ","")
 end
 -- // main
 function library:new(props)
@@ -151,9 +151,9 @@ function library:new(props)
 		}
 	)
 	--
-        if (check_exploit == "Synapse" and syn.request) then
-	syn.protect_gui(screen)
-        end
+	if (check_exploit == "Synapse" and syn.request) then
+		syn.protect_gui(screen)
+	end
 	-- 1
 	local outline = utility.new(
 		"Frame",
@@ -162,7 +162,7 @@ function library:new(props)
 			BackgroundColor3 = color,
 			BorderColor3 = Color3.fromRGB(12, 12, 12),
 			BorderSizePixel = 1,
-			Size = UDim2.new(0,600,0,790),
+			Size = UDim2.new(table.unpack(props.size)),
 			Position = UDim2.new(0.5,0,0.5,0),
 			Parent = screen
 		}
@@ -338,6 +338,7 @@ function library:new(props)
 		["colorpickers"] = {},
 		["x"] = true,
 		["y"] = true,
+		["size"] = props.size,
 		["key"] = Enum.KeyCode.RightShift,
 		["textsize"] = textsize,
 		["font"] = font,
@@ -561,9 +562,9 @@ function library:loader(props)
 			Parent = cre
 		}
 	)
-        if (check_exploit == "Synapse" and syn.request) then
-	syn.protect_gui(screen)
-        end
+	if (check_exploit == "Synapse" and syn.request) then
+		syn.protect_gui(screen)
+	end
 	--
 	local outline = utility.new(
 		"Frame",
@@ -810,7 +811,7 @@ function library:loadconfig(cfg)
 			end
 		end
 	end
-    return cf
+	return cf
 end
 --
 function library:settheme(theme,color)
@@ -826,6 +827,14 @@ function library:settheme(theme,color)
 				x[i] = color
 			end
 		end
+	end
+end
+--
+function library:setsize(size)
+	local window = self
+	
+	if window["outline"] then
+		window["outline"].Size = UDim2.new(table.unpack(size))
 	end
 end
 --
