@@ -135,8 +135,6 @@ function library:new(info) --# window
 		["screen"] = main,
 		["border"] = border,
 		["labels"] = {},
-		["x"] = true,
-		["y"] = true,
 		["textsize"] = info.textsize,
 		["font"] = info.font,
 		["theme"] = {
