@@ -18,18 +18,18 @@ function utility.new(instance_type, properties)
 end
 function utility.dragify(instance, to_use)
 	local dragging, dragInput, dragStart, startPosition
-	
+
 	local function update(input)
 		local delta = input.Position - dragStart
 		to_use:TweenPosition(UDim2.new(startPosition.X.Scale, startPosition.X.Offset + delta.X, startPosition.Y.Scale, startPosition.Y.Offset + delta.Y), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.1, true)
 	end
-	
+
 	instance.InputBegan:Connect(function(input)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 			dragging = true
 			dragStart = input.Position
 			startPosition = to_use.Position
-			
+
 			input.Changed:Connect(function()
 				if input.UserInputState == Enum.UserInputState.End then
 					dragging = false
@@ -68,7 +68,7 @@ function library:new(info) --# window
 		BorderColor3 = Color3.fromRGB(12, 12, 12),
 		BorderSizePixel = 1,
 		Size = UDim2.new(table.unpack(info.size)),
-		Position = UDim2.new(0.5, 0, 0.5, 0)
+		Position = UDim2.new(0.5, 0, 0.5, 0),
 		Parent = main
 	})
 	local border2 = utility.new("Frame", {
