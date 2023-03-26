@@ -67,8 +67,8 @@ function library:new(info) --# window
 		BackgroundColor3 = info.color,
 		BorderColor3 = Color3.fromRGB(12, 12, 12),
 		BorderSizePixel = 1,
-		Size = UDim2.new(0, 100, 0, 100),
-		Position = UDim2.new(0.5, 0, 0.5, 0),
+		Size = UDim2.new(info.size["x"]["offset"], info.size["x"]["scale"], info.size["y"]["offset"], info.size["y"]["scale"]),
+		Position = UDim2.new(0.5, 0, 0.5, 0)
 		Parent = main
 	})
 	local border2 = utility.new("Frame", {
