@@ -209,7 +209,7 @@ function library:settheme(theme, color)
 	end
 	if window.themeitems[theme] then
 		for i, v in pairs(window.themeitems[theme]) do
-			for _, x in pairs(v) do
+			for z, x in pairs(v) do
 				x[i] = color
 			end
 		end
