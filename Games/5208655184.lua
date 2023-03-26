@@ -93,11 +93,9 @@ if not isfolder("opium/configs") then
 	makefolder("opium/configs")
 end
 
-pcall(function()
-	if not readfile(string.format(settingsFile, "default")) then
-		writefile(string.format(settingsFile, "default"), encrypt(httpService:JSONEncode(defaultSettings), key))
-	end
-end)
+if not pcall(function() readfile(string.format(settingsFile, "default")) end) then
+	writefile(string.format(settingsFile, "default"), encrypt(httpService:JSONEncode(defaultSettings), key))
+end
 
 local function load_config(name)
 	pcall(function()
