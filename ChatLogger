@@ -215,4 +215,11 @@ function library:settheme(theme, color)
 		end
 	end
 end
+function library:setsize(size)
+	local window = self
+
+	if window["outline"] then
+		window["outline"].Size = UDim2.new(table.unpack(size))
+	end
+end
 return library
