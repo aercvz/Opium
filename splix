@@ -1785,7 +1785,7 @@ function sections:visualizer(props)
 	local visualizer = {}
 	local visualizerHolder = utility.new("Frame", {
 		BackgroundTransparency = 1,
-		Size = UDim2.new(1, 0, 0, 20),
+		Size = UDim2.new(1, 0, 0, 100),
 		Parent = self.content
 	})
 	local outline = utility.new("Frame", {
@@ -1828,14 +1828,13 @@ function sections:visualizer(props)
 	local custom_camera = utility.new("Camera", {
 		Parent = visualizerHolder
 	})
-	local figure_vp = figure:Clone()
-	figure_vp.Parent = world_model
+	figure.Parent = world_model
 	viewportFrame.CurrentCamera = custom_camera
-	custom_camera.CFrame = CFrame.new(figure_vp.PrimaryPart.Position - Vector3.new(0, 0, 5)) * CFrame.Angles(0, math.rad(180), 0)
+	custom_camera.CFrame = CFrame.new(figure.PrimaryPart.Position - Vector3.new(0, 0, 5)) * CFrame.Angles(0, math.rad(180), 0)
 	visualizer = {
 		["library"] = self.library,
 		["camera"] = custom_camera,
-		["figure"] = figure_vp
+		["figure"] = figure
 	}
 	setmetatable(visualizer, visualizers)
 	return visualizer
