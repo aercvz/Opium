@@ -1830,7 +1830,7 @@ function sections:visualizer(props)
 	})
 	figure.Parent = world_model
 	viewportFrame.CurrentCamera = custom_camera
-	custom_camera.CFrame = CFrame.new(figure.PrimaryPart.Position - Vector3.new(0, 0, 5)) * CFrame.Angles(0, math.rad(180), 0)
+	custom_camera.CFrame = CFrame.new(figure.PrimaryPart.CFrame:ToWorldSpace(CFrame.new(0, 2.5, -7)).Position, figure.PrimaryPart.Position)
 	visualizer = {
 		["library"] = self.library,
 		["camera"] = custom_camera,
