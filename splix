@@ -1781,7 +1781,7 @@ end
 --
 function sections:visualizer(props)
 	local name = props.name or props.Name or "new visualizer"
-	local figure = props.figure or nil
+	local figure = props.figure
 	local visualizer = {}
 	local visualizerHolder = utility.new("Frame", {
 		BackgroundTransparency = 1,
