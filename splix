@@ -2385,6 +2385,7 @@ function sections:dropdown(props)
 	-- // dropdown tbl
 	dropdown = {
 		["library"] = self.library,
+		["dropdownholder"] = dropdownholder,
 		["optionsholder"] = optionsholder,
 		["indicator"] = indicator,
 		["options"] = options,
