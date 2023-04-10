@@ -504,6 +504,84 @@ function library:watermark()
 	return watermark
 end
 --
+function library:notify(title, description, duration)
+	duration = duration or 5
+	local ogX = 0
+	local ogY = 800
+	local outline = utility.new("Frame", {
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		BackgroundColor3 = self.theme.accent,
+		BorderColor3 = Color3.fromRGB(12, 12, 12),
+		Size = UDim2.new(0, 400, 0, 90),
+		Position = UDim2.new(0, ogX, 0, ogY),
+		ZIndex = 9900,
+		Visible = true,
+		Parent = self.screen
+	})
+	local holder = utility.new("Frame", {
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		BackgroundColor3 = Color3.fromRGB(0, 0, 0),
+		BorderColor3 = Color3.fromRGB(12, 12, 12),
+		BorderSizePixel = 1,
+		Size = UDim2.new(1, -4, 1, -4),
+		Position = UDim2.new(0.5, 0, 0.5, 0),
+		ZIndex = 9901,
+		Parent = outline
+	})
+	local indent = utility.new("Frame", {
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		BackgroundColor3 = Color3.fromRGB(20, 20, 20),
+		BorderColor3 = Color3.fromRGB(56, 56, 56),
+		BorderSizePixel = 1,
+		Size = UDim2.new(1, 0, 1, 0),
+		Position = UDim2.new(0.5, 0, 0.5, 0),
+		ZIndex = 9902,
+		Parent = holder
+	})
+	local title = utility.new("TextLabel", {
+		AnchorPoint = Vector2.new(0.5, 0),
+		BackgroundColor3 = Color3.fromRGB(20, 20, 20),
+		BorderColor3 = self.theme.accent,
+		Size = UDim2.new(1, 2, 0.223, 0),
+		Position = UDim2.new(0.5, 0, -0.023, 0),
+		Font = self.font,
+		Text = title,
+		TextColor3 = Color3.fromRGB(255, 255, 255),
+		TextSize = self.textsize,
+		TextStrokeTransparency = 0,
+		ZIndex = 9903,
+		Parent = indent
+	})
+	
+	local description = utility.new("TextLabel", {
+		AnchorPoint = Vector2.new(0.5, 0),
+		BackgroundTransparency = 1,
+		Size = UDim2.new(1, 0, 0.8, 0),
+		Position = UDim2.new(0.5, 0, 0.2, 0),
+		Font = self.font,
+		Text = description,
+		TextColor3 = Color3.fromRGB(255, 255, 255),
+		TextSize = self.textsize * 1.5,
+		TextStrokeTransparency = 0,
+		ZIndex = 9903,
+		Parent = indent
+	})
+	
+
+	table.insert(self.themeitems["accent"]["BackgroundColor3"], outline)
+	game:GetService("TweenService"):Create(outline, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
+		Position = UDim2.new(0, 198, 0, ogY)
+	}):Play()
+	task.delay(duration, function()
+		game:GetService("TweenService"):Create(outline, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
+			Position = UDim2.new(0, ogX, 0, ogY)
+		}):Play()
+		task.wait(0.25)
+		table.remove(self.themeitems["accent"]["BackgroundColor3"], table.find(self.themeitems["accent"]["BackgroundColor3"], outline))
+		outline:Destroy()
+	end)
+end
+--
 function watermarks:update(content)
 	local content = content or {}
 	local watermark = self
