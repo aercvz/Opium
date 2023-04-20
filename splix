@@ -298,7 +298,7 @@ function library:new(props)
 			ScrollBarImageTransparency = 1,
 			ScrollBarThickness = 0,
 			ScrollingDirection = Enum.ScrollingDirection.X,
-			Name = "DOUHATEBLACKPEOPLE",
+			AutomaticCanvasSize = Enum.AutomaticSize.X,
 			Parent = holder
 		}
 	)
