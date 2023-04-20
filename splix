@@ -6,7 +6,6 @@ local multisections = {}
 local mssections = {}
 local toggles = {}
 local buttons = {}
-local visualizers = {}
 local sliders = {}
 local dropdowns = {}
 local multiboxs = {}
@@ -48,7 +47,6 @@ colorpickers.__index = colorpickers
 configloaders.__index = configloaders
 watermarks.__index = watermarks
 loaders.__index = loaders
-visualizers.__index = visualizers
 -- // functions
 utility.new = function(instance,properties) 
 	-- // instance
@@ -130,7 +128,7 @@ utility.to_hex = function(c)
 end
 --
 utility.removespaces = function(s)
-	return s:gsub(" ","")
+   return s:gsub(" ","")
 end
 -- // main
 function library:new(props)
@@ -149,13 +147,13 @@ function library:new(props)
 			DisplayOrder = 9999,
 			ResetOnSpawn = false,
 			ZIndexBehavior = "Global",
-			Parent = game:GetService("CoreGui")
+			Parent = cre
 		}
 	)
 	--
-	if (check_exploit == "Synapse" and syn.request) then
-		syn.protect_gui(screen)
-	end
+        if (check_exploit == "Synapse" and syn.request) then
+	syn.protect_gui(screen)
+        end
 	-- 1
 	local outline = utility.new(
 		"Frame",
@@ -164,7 +162,7 @@ function library:new(props)
 			BackgroundColor3 = color,
 			BorderColor3 = Color3.fromRGB(12, 12, 12),
 			BorderSizePixel = 1,
-			Size = UDim2.new(table.unpack(props.size)),
+			Size = UDim2.new(0,500,0,606),
 			Position = UDim2.new(0.5,0,0.5,0),
 			Parent = screen
 		}
@@ -290,13 +288,17 @@ function library:new(props)
 	)
 	--
 	local tabsbuttons = utility.new(
-		"Frame",
+		"ScrollingFrame",
 		{
 			AnchorPoint = Vector2.new(0.5,0),
 			BackgroundTransparency = 1,
 			Size = UDim2.new(1,0,0,21),
 			Position = UDim2.new(0.5,0,0,0),
 			ZIndex = 2,
+			ScrollBarImageTransparency = 1,
+			ScrollbarThickness = 0,
+			ScrollingDirection = Enum.ScrollingDirection.X,
+			Name = "DOUHATEBLACKPEOPLE",
 			Parent = holder
 		}
 	)
@@ -340,7 +342,6 @@ function library:new(props)
 		["colorpickers"] = {},
 		["x"] = true,
 		["y"] = true,
-		["size"] = props.size,
 		["key"] = Enum.KeyCode.RightShift,
 		["textsize"] = textsize,
 		["font"] = font,
@@ -504,84 +505,6 @@ function library:watermark()
 	return watermark
 end
 --
-function library:notify(title, description, duration)
-	duration = duration or 5
-	local ogX = 0
-	local ogY = 800
-	local outline = utility.new("Frame", {
-		AnchorPoint = Vector2.new(0.5, 0.5),
-		BackgroundColor3 = self.theme.accent,
-		BorderColor3 = Color3.fromRGB(12, 12, 12),
-		Size = UDim2.new(0, 400, 0, 90),
-		Position = UDim2.new(0, ogX, 0, ogY),
-		ZIndex = 9900,
-		Visible = true,
-		Parent = self.screen
-	})
-	local holder = utility.new("Frame", {
-		AnchorPoint = Vector2.new(0.5, 0.5),
-		BackgroundColor3 = Color3.fromRGB(0, 0, 0),
-		BorderColor3 = Color3.fromRGB(12, 12, 12),
-		BorderSizePixel = 1,
-		Size = UDim2.new(1, -4, 1, -4),
-		Position = UDim2.new(0.5, 0, 0.5, 0),
-		ZIndex = 9901,
-		Parent = outline
-	})
-	local indent = utility.new("Frame", {
-		AnchorPoint = Vector2.new(0.5, 0.5),
-		BackgroundColor3 = Color3.fromRGB(20, 20, 20),
-		BorderColor3 = Color3.fromRGB(56, 56, 56),
-		BorderSizePixel = 1,
-		Size = UDim2.new(1, 0, 1, 0),
-		Position = UDim2.new(0.5, 0, 0.5, 0),
-		ZIndex = 9902,
-		Parent = holder
-	})
-	local title = utility.new("TextLabel", {
-		AnchorPoint = Vector2.new(0.5, 0),
-		BackgroundColor3 = Color3.fromRGB(20, 20, 20),
-		BorderColor3 = self.theme.accent,
-		Size = UDim2.new(1, 2, 0.223, 0),
-		Position = UDim2.new(0.5, 0, -0.023, 0),
-		Font = self.font,
-		Text = title,
-		TextColor3 = Color3.fromRGB(255, 255, 255),
-		TextSize = self.textsize,
-		TextStrokeTransparency = 0,
-		ZIndex = 9903,
-		Parent = indent
-	})
-	
-	local description = utility.new("TextLabel", {
-		AnchorPoint = Vector2.new(0.5, 0),
-		BackgroundTransparency = 1,
-		Size = UDim2.new(1, 0, 0.8, 0),
-		Position = UDim2.new(0.5, 0, 0.2, 0),
-		Font = self.font,
-		Text = description,
-		TextColor3 = Color3.fromRGB(255, 255, 255),
-		TextSize = self.textsize * 1.5,
-		TextStrokeTransparency = 0,
-		ZIndex = 9903,
-		Parent = indent
-	})
-	
-
-	table.insert(self.themeitems["accent"]["BackgroundColor3"], outline)
-	game:GetService("TweenService"):Create(outline, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
-		Position = UDim2.new(0, 198, 0, ogY)
-	}):Play()
-	task.delay(duration, function()
-		game:GetService("TweenService"):Create(outline, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
-			Position = UDim2.new(0, ogX, 0, ogY)
-		}):Play()
-		task.wait(0.25)
-		table.remove(self.themeitems["accent"]["BackgroundColor3"], table.find(self.themeitems["accent"]["BackgroundColor3"], outline))
-		outline:Destroy()
-	end)
-end
---
 function watermarks:update(content)
 	local content = content or {}
 	local watermark = self
@@ -642,9 +565,9 @@ function library:loader(props)
 			Parent = cre
 		}
 	)
-	if (check_exploit == "Synapse" and syn.request) then
-		syn.protect_gui(screen)
-	end
+        if (check_exploit == "Synapse" and syn.request) then
+	syn.protect_gui(screen)
+        end
 	--
 	local outline = utility.new(
 		"Frame",
@@ -858,40 +781,20 @@ function watermarks:toggle(bool)
 	watermark.outline.Visible = bool
 end
 --
-function library:saveconfig()
-	local cfg = {}
-	--
-	for i,v in pairs(self.pointers) do
-		cfg[i] = {}
-		for c,d in pairs(v) do
-			cfg[i][c] = {}
-			for x,z in pairs(d) do
-				if typeof(z.current) == "Color3" then
-					cfg[i][c][x] = {z.current.R,z.current.G,z.current.B}
-				else
-					cfg[i][c][x] = z.current
-				end
-			end
-		end
-	end
-	--
-	return hs:JSONEncode(cfg)
-end
---
-function library:loadconfig(cfg)
-	local cfg = hs:JSONDecode(readfile(cfg)--[[syn.crypt.decrypt(readfile(cfg), key)]])
-	for i,v in pairs(cfg) do
-		for c,d in pairs(v) do
-			for x,z in pairs(d) do
-				if z ~= nil then
-					if self.pointers[i] ~= nil and self.pointers[i][c] ~= nil and self.pointers[i][c][x] ~= nil then
-						self.pointers[i][c][x]:set(z)
-					end
-				end
-			end
-		end
-	end
-	return cf
+function library:loadconfig(config, key)
+    config = hs:JSONDecode(syn.crypt.decrypt(readfile(config), key))
+    for i, v in pairs(config) do
+        for c, d in pairs(v) do
+            for x, z in pairs(d) do
+                if z ~= nil then
+                    if self.pointers[i] ~= nil and self.pointers[i][c] ~= nil and self.pointers[i][c][x] ~= nil then
+                        self.pointers[i][c][x]:set(z)
+                    end
+                end
+            end
+        end
+    end
+    return config
 end
 --
 function library:settheme(theme,color)
@@ -907,14 +810,6 @@ function library:settheme(theme,color)
 				x[i] = color
 			end
 		end
-	end
-end
---
-function library:setsize(size)
-	local window = self
-
-	if window["outline"] then
-		window["outline"].Size = UDim2.new(table.unpack(size))
 	end
 end
 --
@@ -1857,72 +1752,6 @@ function sections:button(props)
 	return button
 end
 --
-function sections:visualizer(props)
-	local name = props.name or props.Name or "new visualizer"
-	local figure = props.figure
-	local visualizer = {}
-	local visualizerHolder = utility.new("Frame", {
-		BackgroundTransparency = 1,
-		Size = UDim2.new(0.5, 0, 0, 100),
-		Parent = self.content
-	})
-	local outline = utility.new("Frame", {
-		BackgroundColor3 = Color3.fromRGB(24, 24, 24),
-		BorderColor3 = Color3.fromRGB(12, 12, 12),
-		BorderMode = "Inset",
-		BorderSizePixel = 1,
-		Size = UDim2.new(1, 0, 1, 0),
-		Parent = visualizerHolder
-	})
-	local outline2 = utility.new("Frame", {
-		BackgroundColor3 = Color3.fromRGB(24, 24, 24),
-		BorderColor3 = Color3.fromRGB(56, 56, 56),
-		BorderMode = "Inset",
-		BorderSizePixel = 1,
-		Size = UDim2.new(1, 0, 1, 0),
-		Parent = outline
-	})
-	local color = utility.new("Frame", {
-		BackgroundColor3 = Color3.fromRGB(30, 30, 30),
-		BorderSizePixel = 0,
-		Size = UDim2.new(1, 0, 1, 0),
-		Parent = outline
-	})
-	local gradient = utility.new("UIGradient", {
-		Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(199, 191, 204)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 255, 255))},
-		Rotation = 90,
-		Parent = color
-	})
-	local viewportFrame = utility.new("ViewportFrame", {
-		AnchorPoint = Vector2.new(0, 0),
-		BackgroundTransparency = 1,
-		Size = UDim2.new(1, 0, 1, 0),
-		Position = UDim2.new(0, 0, 0, 0),
-		Parent = visualizerHolder
-	})
-	local world_model = utility.new("WorldModel", {
-		Parent = viewportFrame
-	})
-	local custom_camera = utility.new("Camera", {
-		Parent = visualizerHolder
-	})
-	figure.Parent = world_model
-	viewportFrame.CurrentCamera = custom_camera
-	custom_camera.CFrame = CFrame.new(figure.PrimaryPart.CFrame:ToWorldSpace(CFrame.new(0, 0, -7)).Position, figure.PrimaryPart.Position)
-	visualizer = {
-		["library"] = self.library,
-		["camera"] = custom_camera,
-		["figure"] = figure
-	}
-	setmetatable(visualizer, visualizers)
-	return visualizer
-end
---
-function visualizers:update()
-	local visualizer = self
-	visualizer["camera"].CFrame = CFrame.new(visualizer["figure"].PrimaryPart.Position - Vector3.new(0, 0, 5)) * CFrame.Angles(0, math.rad(180), 0)
-end
---
 function sections:slider(props)
 	-- // properties
 	local name = props.name or props.Name or props.page or props.Page or props.pagename or props.Pagename or props.PageName or props.pageName or "new ui"
@@ -2385,7 +2214,6 @@ function sections:dropdown(props)
 	-- // dropdown tbl
 	dropdown = {
 		["library"] = self.library,
-		["dropdownholder"] = dropdownholder,
 		["optionsholder"] = optionsholder,
 		["indicator"] = indicator,
 		["options"] = options,
