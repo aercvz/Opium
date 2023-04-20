@@ -296,7 +296,7 @@ function library:new(props)
 			Position = UDim2.new(0.5,0,0,0),
 			ZIndex = 2,
 			ScrollBarImageTransparency = 1,
-			ScrollbarThickness = 0,
+			ScrollBarThickness = 0,
 			ScrollingDirection = Enum.ScrollingDirection.X,
 			Name = "DOUHATEBLACKPEOPLE",
 			Parent = holder
