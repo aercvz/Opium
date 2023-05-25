@@ -1,0 +1,99 @@
+local Currentcamera = workspace.CurrentCamera
+local Objects = {}
+
+local Cube = {}
+Cube.__index = Cube
+
+function Cube.new(properties)
+    properties = properties or {}
+    local Femboys = setmetatable({
+        Size = properties.Size or 10,
+        Color = properties.Color or Color3.new(1, 1, 1),
+        Position = properties.Position or Vector3.new(0, 0, 0),
+        OutlineThickness = properties.Thickness or 1,
+        Transparency = properties.Transparency or 1,
+        Filled = properties.Filled or false,
+        Visible = properties.Visible or false,
+        Drawings = {}
+    }, Cube)
+
+    for i = 1, 4 do
+        Femboys.Drawings[i] = Drawing.new('Quad')
+    end
+
+    table.insert(Objects, Femboys)
+
+    return Femboys
+end
+
+function Cube:SetProperty(property, value)
+    for i, drawing in next, self.Drawings do
+        drawing[property] = value
+    end
+end
+
+function Cube:Update()
+    if not self.Visible then 
+        self:SetProperty('Visible', false)
+        return
+    end
+
+    local Size = self.Size / 2
+    local TTR_Position, TTR_Visible = Currentcamera:WorldToViewportPoint(self.Position + Vector3.new(Size, Size, Size))
+    local TTL_Position, TTL_Visible = Currentcamera:WorldToViewportPoint(self.Position + Vector3.new(Size, Size, -Size))
+    local TBR_Position, TBR_Visible = Currentcamera:WorldToViewportPoint(self.Position + Vector3.new(-Size, Size, Size))
+    local TBL_Position, TBL_Visible = Currentcamera:WorldToViewportPoint(self.Position + Vector3.new(-Size, Size, -Size))
+
+    local BTR_Position, BTR_Visible = Currentcamera:WorldToViewportPoint(self.Position + Vector3.new(Size, -Size, Size))
+    local BTL_Position, BTL_Visible = Currentcamera:WorldToViewportPoint(self.Position + Vector3.new(Size, -Size, -Size))
+    local BBR_Position, BBR_Visible = Currentcamera:WorldToViewportPoint(self.Position + Vector3.new(-Size, -Size, Size))
+    local BBL_Position, BBL_Visible = Currentcamera:WorldToViewportPoint(self.Position + Vector3.new(-Size, -Size, -Size))
+
+    if not TTR_Visible or not TTL_Visible or not TBR_Visible or not TBL_Visible or not BTR_Visible or not BTL_Visible or not BBR_Visible or not BBL_Visible then
+        self:SetProperty('Visible', false)
+        return
+    end
+
+    self.Drawings[1].PointA = Vector2.new(TTR_Position.X, TTR_Position.Y)
+    self.Drawings[1].PointB = Vector2.new(TTL_Position.X, TTL_Position.Y)
+    self.Drawings[1].PointC = Vector2.new(TBL_Position.X, TBL_Position.Y)
+    self.Drawings[1].PointD = Vector2.new(TBR_Position.X, TBR_Position.Y)
+
+    self.Drawings[2].PointA = Vector2.new(BTR_Position.X, BTR_Position.Y)
+    self.Drawings[2].PointB = Vector2.new(BTL_Position.X, BTL_Position.Y)
+    self.Drawings[2].PointC = Vector2.new(BBL_Position.X, BBL_Position.Y)
+    self.Drawings[2].PointD = Vector2.new(BBR_Position.X, BBR_Position.Y)
+
+    self.Drawings[3].PointA = self.Drawings[1].PointC
+    self.Drawings[3].PointB = self.Drawings[1].PointB
+    self.Drawings[3].PointC = self.Drawings[2].PointB
+    self.Drawings[3].PointD = self.Drawings[2].PointC
+
+    self.Drawings[4].PointA = self.Drawings[1].PointA
+    self.Drawings[4].PointB = self.Drawings[1].PointD
+    self.Drawings[4].PointC = self.Drawings[2].PointD
+    self.Drawings[4].PointD = self.Drawings[2].PointA
+
+    self:SetProperty('Color', self.Color)
+    self:SetProperty('Filled', self.Filled)
+    self:SetProperty('Transparency', self.Transparency)
+    self:SetProperty('Thickness', self.Thickness)
+    self:SetProperty('Visible', self.Visible)
+end
+
+function Cube:Remove()
+    for i,v in next, self.Drawings do
+        v:Remove()
+    end
+    table.remove(Objects, table.find(Objects, self))
+end
+
+task.spawn(function()
+    while task.wait(1 / 120) do
+        for i, v in next, Objects do
+            v:Update()
+        end
+    end
+end)
+
+return Cube
