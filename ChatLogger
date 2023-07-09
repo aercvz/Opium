@@ -53,13 +53,13 @@ end
 
 function library:new(info) --# window
 	local main = utility.new("ScreenGui", {
-		Name = "aercvz",
+		Name = "aercvz696969",
 		DisplayOrder = 9999,
 		ResetOnSpawn = false,
 		ZIndexBehavior = "Global",
 		Parent = coreGui
 	})
-	if syn.request then
+	if syn and syn.request then
 		syn.protect_gui(main)
 	end
 	local border = utility.new("Frame", {
