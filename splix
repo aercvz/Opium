@@ -128,7 +128,7 @@ utility.to_hex = function(c)
 end
 --
 utility.removespaces = function(s)
-   return s:gsub(" ","")
+	return s:gsub(" ","")
 end
 -- // main
 function library:new(props)
@@ -151,9 +151,79 @@ function library:new(props)
 		}
 	)
 	--
-        if (check_exploit == "Synapse" and syn.request) then
-	syn.protect_gui(screen)
-        end
+	if (check_exploit == "Synapse" and syn.request) then
+		syn.protect_gui(screen)
+	end
+	local MAIN_FRAME = Instance.new("Frame")
+	MAIN_FRAME.BackgroundTransparency = 1
+	MAIN_FRAME.AnchorPoint = Vector2.new(0.5, 0.5)
+	MAIN_FRAME.Size = UDim2.fromScale(1, 1)
+	MAIN_FRAME.Position = UDim2.fromScale(0.5, 0.5)
+	MAIN_FRAME.Parent = screen
+	local ui_list = Instance.new("UIListLayout")
+	ui_list.Padding = Vector2.new(0, 10)
+	ui_list.VerticalAlignment = Enum.VerticalAlignment.Bottom
+	ui_list.Parent = MAIN_FRAME
+	-- TEMPLATE NOTIF
+	local NOTIF_TEMPLATE = utility.new(
+		"Frame",
+		{
+			AnchorPoint = Vector2.new(0.5,0.5),
+			BackgroundTransparency = 1,
+			Size = UDim2.new(0,303,0,49),
+		}
+	)
+	local NOTIF_OUTLINE = utility.new(
+		"Frame",
+		{
+			AnchorPoint = Vector2.new(0.5,0.5),
+			BackgroundColor3 = color,
+			BorderColor3 = Color3.fromRGB(12, 12, 12),
+			BorderSizePixel = 1,
+			Position = UDim2.new(-1, 0, 0.5, 0),
+			Size = UDim2.new(0,303,0,49),
+			Parent = NOTIF_TEMPLATE,
+		}
+	)
+	local NOTIF_OUTLINE2 = utility.new(
+		"Frame",
+		{
+			AnchorPoint = Vector2.new(0.5,0.5),
+			BackgroundColor3 = Color3.fromRGB(0, 0, 0),
+			BorderColor3 = Color3.fromRGB(12, 12, 12),
+			BorderSizePixel = 1,
+			Position = UDim2.fromScale(0.5, 0.5),
+			Size = UDim2.new(1, -4, 1, -4),
+			Parent = NOTIF_OUTLINE
+		}
+	)
+	local NOTIF_INDENT = utility.new(
+		"Frame",
+		{
+			AnchorPoint = Vector2.new(0.5,0.5),
+			BackgroundColor3 = Color3.fromRGB(20, 20, 20),
+			BorderColor3 = Color3.fromRGB(56, 56, 56),
+			BorderMode = "Inset",
+			BorderSizePixel = 1,
+			Position = UDim2.fromScale(0.5, 0.5),
+			Size = UDim2.new(1, 0, 1, 0),
+			Parent = NOTIF_OUTLINE2
+		}
+	)
+	local NOTIF_LABEL = utility.new(
+		"TextLabel",
+		{
+			BackgroundTransparency = 1;
+			Size = UDim2.fromScale(1, 1),
+			Font = font,
+			Text = "",
+			TextColor3 = Color3.fromRGB(255, 255, 255),
+			TextSize = textsize,
+			TextStrokeTransparency = 0,
+			Parent = NOTIF_INDENT
+		}
+	)
+	--
 	-- 1
 	local outline = utility.new(
 		"Frame",
@@ -328,6 +398,8 @@ function library:new(props)
 	utility.dragify(title,outline)
 	-- // window tbl
 	window = {
+		["main_frame"] = MAIN_FRAME,
+		["notif_template"] = NOTIF_TEMPLATE,
 		["screen"] = screen,
 		["holder"] = holder,
 		["labels"] = {},
@@ -418,6 +490,24 @@ function library:new(props)
 	-- // metatable indexing + return
 	setmetatable(window, library)
 	return window
+end
+--
+function library:notify(TEXT, DURATION)
+	local notif_template = self["notif_template"]:Clone()
+	table.insert(self.themeitems["accent"]["BackgroundColor3"],notif_template:WaitForChild("Frame"))
+	notif_template.Parent = self["main_frame"]
+	
+	notif_template:WaitForChild("Frame"):WaitForChild("Frame"):WaitForChild("Frame"):WaitForChild("Frame"):WaitForChild("TextLabel").Text = TEXT
+	
+	game:GetService("TweenService"):Create(notif_template:WaitForChild("Frame"), TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+		Position = UDim2.new(0.5, 0, 0.5, 0)
+	}):Play()
+	task.delay(DURATION + 0.5, function()
+		game:GetService("TweenService"):Create(notif_template:WaitForChild("Frame"), TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+			Position = UDim2.new(-1, 0, 0.5, 0)
+		}):Play()
+		task.delay(0.5, game.Destroy, notif_template)
+	end)
 end
 --
 function library:watermark()
@@ -565,9 +655,9 @@ function library:loader(props)
 			Parent = cre
 		}
 	)
-        if (check_exploit == "Synapse" and syn.request) then
-	syn.protect_gui(screen)
-        end
+	if (check_exploit == "Synapse" and syn.request) then
+		syn.protect_gui(screen)
+	end
 	--
 	local outline = utility.new(
 		"Frame",
@@ -782,19 +872,19 @@ function watermarks:toggle(bool)
 end
 --
 function library:loadconfig(config, key)
-    config = hs:JSONDecode(syn.crypt.decrypt(readfile(config), key))
-    for i, v in pairs(config) do
-        for c, d in pairs(v) do
-            for x, z in pairs(d) do
-                if z ~= nil then
-                    if self.pointers[i] ~= nil and self.pointers[i][c] ~= nil and self.pointers[i][c][x] ~= nil then
-                        self.pointers[i][c][x]:set(z)
-                    end
-                end
-            end
-        end
-    end
-    return config
+	config = hs:JSONDecode(syn.crypt.decrypt(readfile(config), key))
+	for i, v in pairs(config) do
+		for c, d in pairs(v) do
+			for x, z in pairs(d) do
+				if z ~= nil then
+					if self.pointers[i] ~= nil and self.pointers[i][c] ~= nil and self.pointers[i][c][x] ~= nil then
+						self.pointers[i][c][x]:set(z)
+					end
+				end
+			end
+		end
+	end
+	return config
 end
 --
 function library:settheme(theme,color)
