@@ -902,9 +902,9 @@ function library:LOAD_CONFIG(CONFIG_DATA)
 				for INDEX, TABLE in pairs(CONTENTS) do
 					if NAME == TABLE.flag then
 						local TO_SET = VALUE
-						if COMPONENT == "keybind" then
+						if COMPONENT == "keybinds" then
 							TO_SET = Enum.KeyCode[VALUE]
-						elseif COMPONENT == "colorpicker" then
+						elseif COMPONENT == "colorpickers" then
 							TO_SET = Color3.fromRGB(table.unpack(VALUE))
 						end
 						
