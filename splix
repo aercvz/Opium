@@ -1879,6 +1879,7 @@ end
 function sections:slider(props)
 	-- // properties
 	local name = props.name or props.Name or props.page or props.Page or props.pagename or props.Pagename or props.PageName or props.pageName or "new ui"
+	local flag = props.flag or props.Flag
 	local def = props.def or props.Def or props.default or props.Default or 0
 	local max = props.max or props.Max or props.maximum or props.Maximum or 100
 	local min = props.min or props.Min or props.minimum or props.Minimum or 0
@@ -2011,6 +2012,7 @@ function sections:slider(props)
 	slider = {
 		["library"] = self.library,
 		["outline"] = outline,
+		["flag"] = flag,
 		["sliderbutton"] = sliderbutton,
 		["title"] = title,
 		["value"] = value,
@@ -3233,6 +3235,7 @@ end
 function sections:keybind(props)
 	-- // properties
 	local name = props.name or props.Name or props.page or props.Page or props.pagename or props.Pagename or props.PageName or props.pageName or "new ui"
+	local flag = props.flag or props.Flag
 	local def = props.def or props.Def or props.default or props.Default or nil
 	local callback = props.callback or props.callBack or props.CallBack or props.Callback or function()end
 	local allowed = props.allowed or props.Allowed or 1
@@ -3378,6 +3381,7 @@ function sections:keybind(props)
 	keybind = {
 		["library"] = self.library,
 		["down"] = false,
+		["flag"] = flag,
 		["outline"] = outline,
 		["value"] = value,
 		["allowed"] = allowed,
@@ -3524,6 +3528,7 @@ end
 function sections:colorpicker(props)
 	-- // properties
 	local name = props.name or props.Name or "new colorpicker"
+	local flag = props.flag or props.Flag
 	local cpname = props.cpname or props.Cpname or props.CPname or props.CPName or props.cPname or props.cpName or props.colorpickername or nil
 	local def = props.def or props.Def or props.default or props.Default or Color3.fromRGB(255,255,255)
 	local callback = props.callback or props.callBack or props.CallBack or props.Callback or function()end
@@ -3943,6 +3948,7 @@ function sections:colorpicker(props)
 		["huecursor"] = huecursor,
 		["outline3"] = outline3,
 		["huecursor_inline"] = huecursor_inline,
+		["flag"] = flag,
 		["cpcursor"] = cpcursor,
 		["current"] = def,
 		["open"] = false,
