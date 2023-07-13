@@ -907,6 +907,8 @@ function library:LOAD_CONFIG(CONFIG_DATA)
 						elseif COMPONENT == "colorpickers" then
 							TO_SET = Color3.fromRGB(table.unpack(VALUE))
 						end
+						
+						print(tostring(NAME), " = ", tostring(VALUE))
 
 						TABLE:set(TO_SET)
 					end
