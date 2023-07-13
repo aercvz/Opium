@@ -903,7 +903,7 @@ function library:LOAD_CONFIG(CONFIG_DATA)
 					if NAME == TABLE.flag then
 						local TO_SET = VALUE
 						if COMPONENT == "keybinds" then
-							TO_SET = Enum.KeyCode[VALUE]
+							TO_SET = {"KeyCode", tostring(VALUE)}
 						elseif COMPONENT == "colorpickers" then
 							TO_SET = Color3.fromRGB(table.unpack(VALUE))
 						end
