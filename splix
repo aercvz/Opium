@@ -900,7 +900,9 @@ function library:LOAD_CONFIG(CONFIG_DATA)
 		for NAME, VALUE in pairs(CONFIG_DATA) do
 			for COMPONENT, CONTENTS in pairs(importantcachelol) do
 				if COMPONENT == "toggles" then
+					print("IS_TOGGLE")
 					for INDEX, TABLE in pairs(CONTENTS) do
+						print(TABLE.flag)
 						if NAME == TABLE.flag then
 							TABLE:set(VALUE)
 						end
