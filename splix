@@ -1630,6 +1630,7 @@ end
 function sections:toggle(props)
 	-- // properties
 	local name = props.name or props.Name or props.page or props.Page or props.pagename or props.Pagename or props.PageName or props.pageName or "new ui"
+	local flag = props.flag or props.Flag or props.stupidni
 	local def = props.def or props.Def or props.default or props.Default or props.toggle or props.Toggle or props.toggled or props.Toggled or false
 	local callback = props.callback or props.callBack or props.CallBack or props.Callback or function()end
 	-- // variables
@@ -1719,6 +1720,7 @@ function sections:toggle(props)
 		["title"] = title,
 		["color"] = color,
 		["callback"] = callback,
+		["flag"] = flag,
 		["current"] = def
 	}
 	--
