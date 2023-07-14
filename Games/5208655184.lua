@@ -1,4 +1,6 @@
 xpcall(function()
+	repeat task.wait() until game:IsLoaded()
+	
 	local COLLECTION_SERVICE = game:GetService("CollectionService")
 	local RUN_SERVICE = game:GetService("RunService")
 	local CLIENT_STORAGE = game:GetService("ReplicatedStorage")
@@ -24,6 +26,7 @@ xpcall(function()
 	local SET_CONFIGURATION = "default"
 	local SET_TRINKET_BOT_PATH = ""
 	local LAST_OWNERSHIP = tick()
+	local BOT_RUNNING = false
 	local SPECTATING = nil
 	local BAN_ANIMATION = nil
 	local INGREDIENTS_FOLDER = nil
@@ -173,7 +176,7 @@ xpcall(function()
 					VIRTUAL_INPUT_MANAGER:SendMouseButtonEvent(850, 655, 0, true, game, 0)
 					task.wait()
 					VIRTUAL_INPUT_MANAGER:SendMouseButtonEvent(850, 655, 0, false, game, 0)
-					task.wait(0.15)
+					task.wait(0.25)
 					PLAYER:Kick("[opium.cc] Server Hopping...")
 					task.spawn(function()
 						while task.wait(1.5) do
@@ -538,33 +541,92 @@ xpcall(function()
 		xpcall(function()
 			local START_POINT = CURRENT_CFRAME_POINTS[1]
 			if START_POINT then
+				if not CHARACTER or not ROOT then
+					repeat task.wait() until CHARACTER and ROOT
+					repeat task.wait() until (ROOT.Position - Vector3.new(START_POINT.POINT[1], START_POINT.POINT[2], START_POINT.POINT[3])).Magnitude < 10
+					task.wait(1.2)
+				end
 				if (ROOT.Position - Vector3.new(START_POINT.POINT[1], START_POINT.POINT[2], START_POINT.POINT[3])).Magnitude > 10 then
 					WINDOW:notify("not near start point", 5)
 					return
+				end
+				BOT_RUNNING = true
+				if not pcall(function() readfile(string.format("opium/paths/loaded/%s", tostring(PLAYER))) end) then
+					writefile(string.format("opium/paths/loaded/%s", tostring(PLAYER)), HTTP_SERVICE:JSONEncode({["PATH"] = SET_TRINKET_BOT_PATH}))
+				end
+				for _, PLR in pairs(PLAYERS:GetPlayers()) do
+					if PLR ~= PLAYER and PLR.Character then
+						if (ROOT.Position - PLR.Character.PrimaryPart.Position).Magnitude < 500 then
+							xpcall(function()
+								if CHARACTER:FindFirstChild("Danger") then
+									repeat task.wait() until not CHARACTER:FindFirstChild("Danger")
+								end
+								local RANDOM_PLAYER = PLAYERS:GetPlayers()[math.random(1, #PLAYERS:GetPlayers())]
+								STARTER_GUI:SetCore("PromptBlockPlayer", RANDOM_PLAYER)
+								task.delay(0.25, function()
+									for i = 1, 5 do
+										VIRTUAL_INPUT_MANAGER:SendMouseButtonEvent(850, 655, 0, true, game, 0)
+										task.wait()
+										VIRTUAL_INPUT_MANAGER:SendMouseButtonEvent(850, 655, 0, false, game, 0)
+									end
+									task.wait(0.56)
+									PLAYER:Kick("[opium.cc] Server Hopping...")
+									task.spawn(function()
+										while task.wait(1.5) do
+											TELEPORT_SERVICE:Teleport(3016661674, PLAYER, {
+												["PATH"] = SET_TRINKET_BOT_PATH;
+											})
+										end
+									end)
+								end)
+							end, print)
+							return
+						end
+					end
 				end
 				for INDEX, POINT_DATA in pairs(CURRENT_CFRAME_POINTS) do
 					xpcall(function()
 						local POINT = Vector3.new(POINT_DATA.POINT[1], POINT_DATA.POINT[2], POINT_DATA.POINT[3])
 						local MAGNITUDE = (ROOT.Position - POINT).Magnitude
-						local SPEED = 50
+						local SPEED = 100
 						local TELEPORT = TWEEN_SERVICE:Create(ROOT, TweenInfo.new(MAGNITUDE/SPEED, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {
 							CFrame = CFrame.new(POINT)
 						})
+						local NOCLIP_CONNECTION; NOCLIP_CONNECTION = RUN_SERVICE.RenderStepped:Connect(function()
+							HUMANOID.JumpPower = 0
+							HUMANOID:ChangeState(Enum.HumanoidStateType.Jumping)
+							HUMANOID.JumpPower = 0
+							local PARTS = workspace:GetPartsInPart(ROOT)
+							for _, PART in pairs(PARTS) do
+								if NOCLIPPED_PARTS[PART] or (not PART:IsDescendantOf(CHARACTER) and PART.CanCollide) then
+									NOCLIPPED_PARTS[PART] = tick()
+									PART.CanCollide = false
+								end
+							end
+						end)
 						TELEPORT:Play()
 						TELEPORT.Completed:Wait()
+						NOCLIP_CONNECTION:Disconnect()
 						if POINT_DATA.TYPE == "TRINKET_WAIT" then
+							ROOT.Anchored = true
 							task.wait(7)
+							ROOT.Anchored = false
 						end
 					end, print)
 				end
 				xpcall(function()
+					if CHARACTER:FindFirstChild("Danger") then
+						repeat task.wait() until not CHARACTER:FindFirstChild("Danger")
+					end
 					local RANDOM_PLAYER = PLAYERS:GetPlayers()[math.random(1, #PLAYERS:GetPlayers())]
 					STARTER_GUI:SetCore("PromptBlockPlayer", RANDOM_PLAYER)
 					task.delay(0.25, function()
-						VIRTUAL_INPUT_MANAGER:SendMouseButtonEvent(850, 655, 0, true, game, 0)
-						task.wait()
-						VIRTUAL_INPUT_MANAGER:SendMouseButtonEvent(850, 655, 0, false, game, 0)
-						task.wait(0.15)
+						for i = 1, 5 do
+							VIRTUAL_INPUT_MANAGER:SendMouseButtonEvent(850, 655, 0, true, game, 0)
+							task.wait()
+							VIRTUAL_INPUT_MANAGER:SendMouseButtonEvent(850, 655, 0, false, game, 0)
+						end
+						task.wait(0.56)
 						PLAYER:Kick("[opium.cc] Server Hopping...")
 						task.spawn(function()
 							while task.wait(1.5) do
@@ -648,6 +710,9 @@ xpcall(function()
 	end
 	if not isfolder("opium/paths") then
 		makefolder("opium/paths")
+	end
+	if not isfolder("opium/paths/loaded") then
+		makefolder("opium/paths/loaded")
 	end
 	if not isfolder(string.format("opium/configs/%s", tostring(game.PlaceId))) then
 		makefolder(string.format("opium/configs/%s", tostring(game.PlaceId)))
@@ -1199,13 +1264,28 @@ xpcall(function()
 		end, print)
 	end, print)
 	xpcall(function()
-		print(tostring(TELEPORT_DATA))
-		if typeof(TELEPORT_DATA) == "table" and TELEPORT_DATA.PATH then
-			xpcall(function()
-				CURRENT_CFRAME_POINTS = HTTP_SERVICE:JSONDecode(readfile(string.format("opium/paths/%s", TELEPORT_DATA.PATH)))
-				task.wait()
-				xpcall(START_PATH, print)
-			end, print)
+		if pcall(function() readfile(string.format("opium/paths/loaded/%s", tostring(PLAYER))) end) then
+			local PATH_DATA = HTTP_SERVICE:JSONDecode(readfile(string.format("opium/paths/loaded/%s", tostring(PLAYER))))
+			if PATH_DATA.PATH then
+				xpcall(function()
+					task.delay(6, function()
+						xpcall(function()
+							if PLAYER_GUI:FindFirstChild("StartMenu") then
+								task.wait(0.5)
+								pcall(function()
+									firesignal(PLAYER_GUI.StartMenu.Choices.Play.MouseButton1Click)
+								end)
+							end
+							repeat task.wait() until CHARACTER
+
+
+							CURRENT_CFRAME_POINTS = HTTP_SERVICE:JSONDecode(readfile(string.format("opium/paths/%s", PATH_DATA.PATH)))
+							task.wait()
+							START_PATH()
+						end, print)
+					end)
+				end, print)
+			end
 		end
 	end, print)
 	xpcall(function()
