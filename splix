@@ -925,6 +925,8 @@ function library:LOAD_CONFIG(CONFIG_DATA)
 						local TO_SET = VALUE
 						if COMPONENT == "colorpickers" then
 							TO_SET = Color3.fromRGB(table.unpack(VALUE))
+						elseif COMPONENT == "keybinds" then
+							TO_SET = Enum.KeyCode[VALUE]
 						end
 
 						TABLE:set(TO_SET)
