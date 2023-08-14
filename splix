@@ -925,8 +925,6 @@ function library:LOAD_CONFIG(CONFIG_DATA)
 						local TO_SET = VALUE
 						if COMPONENT == "colorpickers" then
 							TO_SET = Color3.fromRGB(table.unpack(VALUE))
-						elseif COMPONENT == "keybinds" then
-							TO_SET = Enum.KeyCode[VALUE]
 						end
 
 						TABLE:set(TO_SET)
@@ -3489,13 +3487,16 @@ end
 --
 function keybinds:set(key)
 	if key then
-		if typeof(key) == "EnumItem" or typeof(key) == "table" then
+		if typeof(key) == "EnumItem" or typeof(key) == "table" or typeof(key) == "string" then
 			if typeof(key) == "table" then
 				if key[1] and key[2] then
 					key = Enum[key[1]][key[2]]
 				else
 					return
 				end
+			end
+			if typeof(key) == "string" then
+				key = Enum.KeyCode[key]
 			end
 			local keybind = self
 			local typeis = ""
