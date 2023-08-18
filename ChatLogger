@@ -290,7 +290,9 @@ function library:settheme(theme, color)
 end
 function library:set_cfg()
 	local window = self
-
+	
+	print("setting cfg")
+	
 	window["border"].Size = UDim2.new(table.unpack(CONFIG.CHAT_LOGGER_SIZE))
 	window["border"].Position = UDim2.new(table.unpack(CONFIG.CHAT_LOGGER_POSITION))
 end
