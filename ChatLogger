@@ -264,9 +264,6 @@ function library:update(toggled)
 	local totalSize = UDim2.new(0, 0, 0, 0)
 	local window = self
 	window["screen"].Enabled = toggled
-	if CONFIG then
-		
-	end
 	if window["logger_holder"] then
 		for _, text_label in pairs(window["logger_holder"]:GetChildren()) do
 			if text_label:IsA("TextLabel") then
@@ -295,9 +292,7 @@ end
 function library:set_cfg()
 	local window = self
 
-	if window["border"] then
-		window["border"].Size = UDim2.new(table.unpack(CONFIG.CHAT_LOGGER_SIZE))
-		window["border"].Position = UDim2.new(table.unpack(CONFIG.CHAT_LOGGER_POSITION))
-	end
+	window["border"].Size = UDim2.new(table.unpack(CONFIG.CHAT_LOGGER_SIZE))
+	window["border"].Position = UDim2.new(table.unpack(CONFIG.CHAT_LOGGER_POSITION))
 end
 return library
