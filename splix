@@ -919,15 +919,26 @@ end
 function library:LOAD_CONFIG(CONFIG_DATA)
 	xpcall(function()
 		for NAME, VALUE in pairs(CONFIG_DATA) do
-			for COMPONENT, CONTENTS in pairs(importantcachelol) do
-				for INDEX, TABLE in pairs(CONTENTS) do
-					if NAME == TABLE.flag then
-						local TO_SET = VALUE
-						if COMPONENT == "colorpickers" then
-							TO_SET = Color3.fromRGB(table.unpack(VALUE))
-						end
+			if table.find({"MENU_SIZE"; "MENU_POSITION"; "CHAT_LOGGER_SIZE"; "CHAT_LOGGER_POSITION"}, NAME) then
+				local window = self
+				local outline = window.outline
+				
+				if NAME == "MENU_SIZE" then
+					outline.Size = UDim2.new(table.unpack(VALUE))
+				elseif NAME == "MENU_POSITION" then
+					outline.Position = UDim2.new(table.unpack(VALUE))
+				end
+			else
+				for COMPONENT, CONTENTS in pairs(importantcachelol) do
+					for INDEX, TABLE in pairs(CONTENTS) do
+						if NAME == TABLE.flag then
+							local TO_SET = VALUE
+							if COMPONENT == "colorpickers" then
+								TO_SET = Color3.fromRGB(table.unpack(VALUE))
+							end
 
-						TABLE:set(TO_SET)
+							TABLE:set(TO_SET)
+						end
 					end
 				end
 			end
