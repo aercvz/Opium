@@ -1,5 +1,9 @@
 local coreGui = game:GetService("CoreGui")
+local players = game:GetService("Players")
 local userInput = game:GetService("UserInputService")
+
+local player = players.LocalPlayer
+local mouse = player:GetMouse()
 
 local library = {}
 
@@ -15,6 +19,75 @@ function utility.new(instance_type, properties)
 		instance[property] = value
 	end
 	return instance
+end
+function utility.resizify(frame) --# resizify LMAOOOO
+	local resizing, start_size, drag_input, start_position
+	
+	local function update(input)
+		if resizing then
+			local new_position = input.Position
+			local delta = new_position - start_position
+
+			frame:TweenSize(UDim2.new(
+				start_size.X.Scale, start_size.X.Offset + delta.X, start_size.Y.Scale, start_size.Y.Offset - delta.Y
+			), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.1, true)
+		end
+	end
+	
+	local function get_closest_corner()
+		local top_left = frame.AbsolutePosition
+		local corners = {
+			top_left = top_left;
+			top_right = top_left + Vector2.new(frame.AbsoluteSize.X, 0);
+			bottom_left = top_left + Vector2.new(0, frame.AbsoluteSize.Y);
+			bottom_right = top_left + Vector2.new(frame.AbsoluteSize.X, frame.AbsoluteSize.Y);
+		}
+		
+		local origin = Vector2.new(mouse.X, mouse.Y)
+		local corner, distance = nil, 40
+		
+		for var, val in pairs(corners) do
+			local magnitude = (userInput:GetMouseLocation() - val).Magnitude
+			print(magnitude)
+			if magnitude < distance then
+				distance = magnitude
+				corner = val
+			end
+		end
+		
+		return corner
+	end
+	
+	frame.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+			drag_input = input
+		end
+	end)
+	userInput.InputBegan:Connect(function(input, game_event)
+		if not game_event then
+			if input.UserInputType == Enum.UserInputType.MouseButton1 and get_closest_corner() then
+				start_size = frame.Size
+				start_position = input.Position
+				resizing = true
+				frame:SetAttribute("resizing", true)
+				local corner = get_closest_corner()
+				task.spawn(function()
+					while task.wait() do
+						if not userInput:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) then
+							resizing = false
+							frame:SetAttribute("resizing", nil)
+							break
+						end
+					end
+				end)
+			end
+		end
+	end)
+	userInput.InputChanged:Connect(function(input)
+		if input == drag_input and resizing then
+			update(input)
+		end
+	end)
 end
 function utility.dragify(instance, to_use)
 	local dragging, dragInput, dragStart, startPosition
@@ -43,7 +116,7 @@ function utility.dragify(instance, to_use)
 		end
 	end)
 	userInput.InputChanged:Connect(function(input)
-		if input == dragInput and dragging then
+		if input == dragInput and dragging and not to_use:GetAttribute("resizing") then
 			update(input)
 		end
 	end)
@@ -146,6 +219,7 @@ function library:new(info) --# window
 		Parent = logger_contents
 	})
 	utility.dragify(title, border)
+	utility.resizify(border)
 	local window = {
 		["screen"] = main,
 		["border"] = border,
@@ -190,6 +264,9 @@ function library:update(toggled)
 	local totalSize = UDim2.new(0, 0, 0, 0)
 	local window = self
 	window["screen"].Enabled = toggled
+	if CONFIG then
+		
+	end
 	if window["logger_holder"] then
 		for _, text_label in pairs(window["logger_holder"]:GetChildren()) do
 			if text_label:IsA("TextLabel") then
@@ -215,11 +292,12 @@ function library:settheme(theme, color)
 		end
 	end
 end
-function library:setsize(size)
+function library:set_cfg()
 	local window = self
 
 	if window["border"] then
-		window["border"].Size = UDim2.new(table.unpack(size))
+		window["border"].Size = UDim2.new(table.unpack(CONFIG.CHAT_LOGGER_SIZE))
+		window["border"].Position = UDim2.new(table.unpack(CONFIG.CHAT_LOGGER_POSITION))
 	end
 end
 return library
