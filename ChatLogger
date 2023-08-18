@@ -293,6 +293,8 @@ function library:set_cfg()
 	
 	print("setting cfg")
 	
+	repeat task.wait() until CONFIG
+	
 	window["border"].Size = UDim2.new(table.unpack(CONFIG.CHAT_LOGGER_SIZE))
 	window["border"].Position = UDim2.new(table.unpack(CONFIG.CHAT_LOGGER_POSITION))
 end
