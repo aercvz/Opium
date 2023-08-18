@@ -141,7 +141,6 @@ function library:new(info) --# window
 		BorderColor3 = Color3.fromRGB(12, 12, 12),
 		BorderSizePixel = 1,
 		Size = UDim2.new(table.unpack(info.size)),
-		Position = UDim2.new(0.5, 0, 0.5, 0),
 		Parent = main
 	})
 	local border2 = utility.new("Frame", {
