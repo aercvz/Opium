@@ -538,6 +538,22 @@ function library:notify(TEXT, DURATION)
 	end)
 end
 --
+function library:add_label(text)
+	local text_label = Instance.new("TextLabel")
+	text_label.Font = Enum.Font.RobotoMono
+	text_label.Size = UDim2.new(1, -10, 1, 0)
+	text_label.Text = text
+	text_label.TextStrokeTransparency = 0
+	text_label.BackgroundTransparency = 1
+	text_label.AnchorPoint = Vector2.new(0.5, 0.5)
+	text_label.Color = Color3.fromRGB(255, 255, 255)
+	text_label.Parent = self["screen"]
+	
+	utility.dragify(text_label, text_label)
+	
+	return text_label
+end
+--
 function library:watermark()
 	local watermark = {}
 	--
@@ -922,7 +938,7 @@ function library:LOAD_CONFIG(CONFIG_DATA)
 			if table.find({"MENU_SIZE"; "MENU_POSITION"; "CHAT_LOGGER_SIZE"; "CHAT_LOGGER_POSITION"}, NAME) then
 				local window = self
 				local outline = window.outline
-				
+
 				if NAME == "MENU_SIZE" then
 					outline.Size = UDim2.new(table.unpack(VALUE))
 				elseif NAME == "MENU_POSITION" then
