@@ -22,7 +22,7 @@ function utility.new(instance_type, properties)
 end
 function utility.resizify(frame) --# resizify LMAOOOO
 	local resizing, start_size, drag_input, start_position
-	
+
 	local function update(input)
 		if resizing then
 			local new_position = input.Position
@@ -30,10 +30,10 @@ function utility.resizify(frame) --# resizify LMAOOOO
 
 			frame:TweenSize(UDim2.new(
 				start_size.X.Scale, start_size.X.Offset + delta.X, start_size.Y.Scale, start_size.Y.Offset - delta.Y
-			), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.1, true)
+				), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.1, true)
 		end
 	end
-	
+
 	local function get_closest_corner()
 		local top_left = frame.AbsolutePosition
 		local corners = {
@@ -42,10 +42,10 @@ function utility.resizify(frame) --# resizify LMAOOOO
 			bottom_left = top_left + Vector2.new(0, frame.AbsoluteSize.Y);
 			bottom_right = top_left + Vector2.new(frame.AbsoluteSize.X, frame.AbsoluteSize.Y);
 		}
-		
+
 		local origin = Vector2.new(mouse.X, mouse.Y)
 		local corner, distance = nil, 40
-		
+
 		for var, val in pairs(corners) do
 			local magnitude = (userInput:GetMouseLocation() - val).Magnitude
 			print(magnitude)
@@ -54,10 +54,10 @@ function utility.resizify(frame) --# resizify LMAOOOO
 				corner = val
 			end
 		end
-		
+
 		return corner
 	end
-	
+
 	frame.InputChanged:Connect(function(input)
 		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
 			drag_input = input
@@ -257,6 +257,8 @@ function library:insert_label(text, color)
 			Parent = window["logger_holder"]
 		})
 		window["labels"][#window["labels"] + 1] = label
+		
+		return label
 	end
 end
 function library:update(toggled)
@@ -290,11 +292,11 @@ function library:settheme(theme, color)
 end
 function library:set_cfg()
 	local window = self
-	
+
 	print("setting cfg")
-	
+
 	repeat task.wait() until CONFIG
-	
+
 	window["border"].Size = UDim2.new(table.unpack(CONFIG.CHAT_LOGGER_SIZE))
 	window["border"].Position = UDim2.new(table.unpack(CONFIG.CHAT_LOGGER_POSITION))
 end
