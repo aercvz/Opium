@@ -245,7 +245,7 @@ end
 function library:insert_label(text, color)
 	local window = self
 	if window["logger_holder"] then
-		local label = utility.new("TextLabel", {
+		local label = utility.new("TextButton", {
 			Text = text,
 			BackgroundTransparency = 1,
 			TextColor3 = Color3.fromRGB(255, 255, 255),
