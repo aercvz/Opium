@@ -245,7 +245,7 @@ end
 function library:insert_label(text, color)
 	local window = self
 	if window["logger_holder"] then
-		local label = utility.new("TextButton", {
+		local label = utility.new("TextLabel", {
 			Text = text,
 			BackgroundTransparency = 1,
 			TextColor3 = Color3.fromRGB(255, 255, 255),
@@ -257,7 +257,7 @@ function library:insert_label(text, color)
 			Parent = window["logger_holder"]
 		})
 		window["labels"][#window["labels"] + 1] = label
-		
+
 		return label
 	end
 end
