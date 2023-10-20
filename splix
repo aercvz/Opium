@@ -520,7 +520,7 @@ function library:notify(TEXT, DURATION)
 	notif_template:WaitForChild("Frame"):WaitForChild("Frame"):WaitForChild("Frame"):WaitForChild("TextLabel").Text = TEXT
 	notif_template:WaitForChild("Frame"):WaitForChild("Frame"):WaitForChild("Frame"):WaitForChild("TextButton").MouseButton1Down:Connect(function()
 		game:GetService("TweenService"):Create(notif_template:WaitForChild("Frame"), TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-			Position = UDim2.new(-1, 0, 0.5, 0)
+			Position = UDim2.new(-1, 0, 0.15, 0)
 		}):Play()
 		task.delay(0.5, game.Destroy, notif_template)
 	end)
@@ -531,7 +531,7 @@ function library:notify(TEXT, DURATION)
 	task.delay(DURATION + 0.5, function()
 		if notif_template and notif_template.Parent then
 			game:GetService("TweenService"):Create(notif_template:WaitForChild("Frame"), TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-				Position = UDim2.new(-1, 0, 0.5, 0)
+				Position = UDim2.new(-1, 0, 0.15, 0)
 			}):Play()
 			task.delay(0.5, game.Destroy, notif_template)
 		end
@@ -549,9 +549,9 @@ function library:add_label(text)
 	text_label.TextColor3 = Color3.fromRGB(255, 255, 255)
 	text_label.TextSize = 13
 	text_label.Parent = self["screen"]
-	
+
 	utility.dragify(text_label, text_label)
-	
+
 	return text_label
 end
 --
